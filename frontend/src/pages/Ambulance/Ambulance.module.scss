@@ -1,0 +1,164 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.container { padding: $space-md 0; }
+.header {
+  @include flex-between; margin-bottom: $space-xl;
+  h1 { font-size: 1.8rem; margin: 0; }
+}
+
+.statusBadge {
+  background: rgba($success, 0.12); color: $success;
+  padding: 6px 14px; border-radius: $radius-pill;
+  font-weight: 600; display: flex; align-items: center; gap: 8px;
+  .pulse { width: 8px; height: 8px; background: $success; border-radius: 50%; animation: pulse-ring 2s infinite; }
+}
+
+.layout {
+  display: grid; grid-template-columns: 2fr 1fr; gap: $space-xl;
+  @include mobile { grid-template-columns: 1fr; }
+}
+
+.mapSection {
+  @include glass-elevated; height: 600px; overflow: hidden; position: relative;
+  border-radius: $radius-lg;
+  @include mobile { height: 400px; }
+
+  // Override Leaflet popup styles for dark theme
+  :global {
+    .leaflet-popup-content-wrapper {
+      background: #1a1f2e;
+      color: #e5e7eb;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .leaflet-popup-tip {
+      background: #1a1f2e;
+    }
+
+    .leaflet-popup-close-button {
+      color: #9ca3af !important;
+      &:hover { color: #fff !important; }
+    }
+
+    .leaflet-control-zoom {
+      border: none !important;
+      
+      a {
+        background: rgba(26, 31, 46, 0.9) !important;
+        color: #e5e7eb !important;
+        border: 1px solid rgba(255,255,255,0.1) !important;
+        backdrop-filter: blur(10px);
+        
+        &:hover {
+          background: rgba(99, 102, 241, 0.3) !important;
+        }
+      }
+    }
+
+    .leaflet-control-attribution {
+      background: rgba(10, 15, 30, 0.85) !important;
+      color: #6b7280 !important;
+      font-size: 0.65rem !important;
+      
+      a { color: #818cf8 !important; }
+    }
+
+    @keyframes ambPulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(239,68,68,0.6); }
+      50% { box-shadow: 0 0 35px rgba(239,68,68,0.9); }
+    }
+  }
+}
+
+.routeOverlay {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.routeInfo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(26, 31, 46, 0.92);
+  backdrop-filter: blur(12px);
+  border-radius: $radius-pill;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  font-size: 0.78rem;
+  color: #a5b4fc;
+  pointer-events: auto;
+
+  svg { color: #6366f1; }
+}
+
+.infoSection { @include flex-col; gap: $space-lg; }
+
+.etaCard {
+  @include glass-card; padding: $space-2xl; text-align: center;
+  background: linear-gradient(135deg, rgba($accent, 0.08), rgba(0,0,0,0.2));
+  border: 1px solid rgba($accent, 0.12);
+  h3 { color: $text-dim; font-size: 0.9rem; margin-bottom: $space-md; text-transform: uppercase; letter-spacing: 0.5px; }
+  .time { font-size: 3.5rem; font-weight: 800; color: $accent; margin-bottom: $space-sm; font-family: $font-heading; letter-spacing: 2px; }
+  p { color: $text-muted; margin: 0; font-size: 0.85rem; }
+}
+
+.destinationCard {
+  @include glass-card; padding: $space-lg;
+  display: flex; align-items: center; gap: $space-lg;
+  border: 1px solid rgba($success, 0.1);
+  
+  .destIcon { font-size: 1.6rem; color: $success; flex-shrink: 0; }
+  h4 { margin: 0 0 4px; font-size: 0.78rem; color: $text-dim; text-transform: uppercase; letter-spacing: 0.5px; }
+  p { margin: 0 0 2px; font-size: 0.92rem; font-weight: 600; }
+  span { font-size: 0.75rem; color: $text-dim; }
+}
+
+.driverCard {
+  @include glass-card; padding: $space-lg;
+  .driverInfo {
+    display: flex; align-items: center; gap: $space-md; margin-bottom: $space-lg;
+    .avatar { width: 48px; height: 48px; border-radius: 50%; background: $primary; color: white; @include flex-center; font-size: 1.3rem; }
+    h4 { margin: 0 0 2px; font-size: 0.95rem; }
+    p { margin: 0; color: $text-dim; font-size: 0.8rem; }
+  }
+}
+
+.callBtn {
+  width: 100%; padding: 0.7rem; border-radius: $radius-md;
+  background: rgba($success, 0.1); color: $success; font-weight: 600;
+  @include flex-center; gap: 8px; transition: $transition;
+  text-decoration: none; display: flex;
+  border: 1px solid rgba($success, 0.15);
+  cursor: pointer;
+  &:hover { background: $success; color: white; }
+}
+
+.timeline { @include glass-card; padding: $space-xl; }
+
+.point {
+  display: flex; gap: $space-md; position: relative; padding-bottom: $space-xl;
+  &::before { content: ''; position: absolute; left: 6px; top: 14px; bottom: 0; width: 2px; background: rgba(255,255,255,0.06); }
+  &:last-child { padding-bottom: 0; &::before { display: none; } }
+  .dot { width: 14px; height: 14px; border-radius: 50%; background: $dark-bg; border: 2px solid $text-dim; position: relative; z-index: 2; margin-top: 2px; flex-shrink: 0; }
+  &.completed { .dot { background: $success; border-color: $success; } &::before { background: $success; } }
+  &.active .dot { border-color: $accent; animation: pulse-ring 2s infinite; }
+}
+
+.timelineTitle {
+  margin: 0 0 2px;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.timelineTime {
+  margin: 0;
+  font-size: 0.75rem;
+  color: $text-dim;
+}

@@ -1,0 +1,322 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.container { padding: $space-md 0; }
+
+.header {
+  @include flex-between;
+  margin-bottom: $space-2xl;
+  flex-wrap: wrap;
+  gap: $space-lg;
+}
+
+.headerLeft {
+  display: flex; align-items: center; gap: $space-lg;
+  h1 { font-size: 1.6rem; margin: 0; }
+}
+
+.headerIcon { font-size: 1.8rem; color: $primary; }
+
+.headerSub { color: var(--text-muted); font-size: 0.88rem; margin: 0; }
+
+.headerActions { display: flex; gap: $space-md; }
+
+.qrBtn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 18px;
+  border-radius: $radius-md;
+  background: rgba($secondary, 0.12);
+  color: $secondary;
+  font-weight: 600;
+  font-size: 0.85rem;
+  border: 1px solid rgba($secondary, 0.2);
+  &:hover { background: rgba($secondary, 0.2); transform: translateY(-1px); }
+}
+
+.editBtn, .saveBtn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 18px;
+  border-radius: $radius-md;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.editBtn {
+  background: var(--bg-glass);
+  color: var(--text-muted);
+  border: 1px solid var(--border-glass);
+  &:hover { background: var(--overlay-bg); color: var(--text-primary); }
+}
+
+.saveBtn {
+  background: linear-gradient(135deg, $success, darken($success, 10%));
+  color: white;
+  &:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba($success, 0.3); }
+}
+
+// ── QR Modal ────────────────────────────────────────────
+.qrModal {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: $z-modal;
+  @include flex-center;
+}
+
+.qrCard {
+  @include glass-elevated;
+  padding: $space-2xl $space-3xl;
+  text-align: center;
+  max-width: 380px;
+  h3 { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: $space-sm; }
+  > p { color: var(--text-muted); font-size: 0.85rem; margin-bottom: $space-xl; }
+}
+
+.qrWrapper {
+  padding: $space-xl;
+  background: #ffffff;
+  border-radius: $radius-lg;
+  display: inline-block;
+  margin-bottom: $space-lg;
+}
+
+.qrInfo {
+  display: flex; justify-content: center; gap: $space-lg;
+  margin-bottom: $space-xl;
+  span {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 0.8rem; color: var(--text-muted);
+  }
+}
+
+.qrClose {
+  padding: 8px 24px;
+  border-radius: $radius-md;
+  background: var(--bg-glass);
+  color: var(--text-muted);
+  border: 1px solid var(--border-glass);
+  font-weight: 600;
+  &:hover { color: var(--text-primary); }
+}
+
+.qrHint {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  margin-bottom: $space-lg;
+  line-height: 1.4;
+}
+
+.spinner {
+  width: 18px; height: 18px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: rotate 0.6s linear infinite;
+  display: inline-block;
+}
+
+.contactEditGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: $space-sm;
+  width: 100%;
+  input { @include input-field; background: var(--input-bg); font-size: 0.85rem; }
+  @include mobile { grid-template-columns: 1fr; }
+}
+
+.emptyContact {
+  width: 100%;
+  text-align: center;
+  p { color: var(--text-dim); font-size: 0.85rem; margin: 0; }
+}
+
+// ── Grid ────────────────────────────────────────────────
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $space-xl;
+  @include mobile { grid-template-columns: 1fr; }
+}
+
+.card {
+  @include glass-card;
+  padding: $space-2xl;
+}
+
+.cardHeader {
+  display: flex; align-items: center; gap: $space-md;
+  margin-bottom: $space-xl;
+  padding-bottom: $space-md;
+  border-bottom: 1px solid var(--border-glass);
+  h2 { font-size: 1.1rem; margin: 0; }
+}
+
+.cardIcon { font-size: 1.2rem; color: $secondary; }
+.cardIconDanger { font-size: 1.2rem; color: $danger; }
+.cardIconAccent { font-size: 1.2rem; color: $accent; }
+.cardIconSuccess { font-size: 1.2rem; color: $success; }
+.cardIconSecondary { font-size: 1.2rem; color: $secondary; }
+
+.cardDesc { color: var(--text-muted); font-size: 0.85rem; margin-bottom: $space-lg; }
+
+.fieldGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $space-lg;
+  @include mobile { grid-template-columns: 1fr; }
+}
+
+.field {
+  &.fullWidth { grid-column: 1 / -1; }
+  label {
+    display: flex; align-items: center; gap: 6px;
+    color: var(--text-dim);
+    font-size: 0.78rem;
+    margin-bottom: $space-sm;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    svg { font-size: 0.85rem; }
+  }
+
+  input, textarea, select {
+    @include input-field;
+    background: var(--input-bg);
+  }
+
+  textarea { resize: vertical; }
+
+  select {
+    @include input-field;
+    background: var(--input-bg);
+    cursor: pointer;
+  }
+}
+
+.value {
+  font-weight: 500;
+  font-size: 1rem;
+  color: var(--text-secondary);
+  padding: $space-sm 0;
+}
+
+.bloodValue {
+  color: $danger !important;
+  font-weight: 800 !important;
+  font-size: 1.8rem !important;
+}
+
+.donorActive { color: $success !important; }
+
+// ── Tags ────────────────────────────────────────────────
+.tagList { display: flex; flex-wrap: wrap; gap: $space-sm; padding: $space-sm 0; }
+
+.tagDanger {
+  background: rgba($danger, 0.1);
+  color: $danger;
+  padding: 4px 14px;
+  border-radius: $radius-pill;
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+.tagWarning {
+  background: rgba($warning, 0.1);
+  color: $warning;
+  padding: 4px 14px;
+  border-radius: $radius-pill;
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+.medList {
+  padding: $space-sm 0 $space-sm $space-xl;
+  color: var(--text-secondary);
+  list-style: disc;
+  li { margin-bottom: $space-sm; &::marker { color: $accent; } }
+}
+
+// ── Contacts ────────────────────────────────────────────
+.contactList { @include flex-col; gap: $space-md; }
+
+.contactCard {
+  display: flex; align-items: center; gap: $space-lg;
+  padding: $space-lg;
+  background: var(--overlay-bg);
+  border-radius: $radius-md;
+}
+
+.contactAvatar {
+  width: 44px; height: 44px;
+  border-radius: $radius-full;
+  background: linear-gradient(135deg, $primary, $accent);
+  @include flex-center;
+  font-weight: 700;
+  color: white;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.contactInfo {
+  flex: 1;
+  strong { display: block; font-size: 0.95rem; margin-bottom: 2px; }
+  span { display: block; color: var(--text-dim); font-size: 0.78rem; }
+  a { display: block; color: $accent; font-size: 0.85rem; margin-top: 2px; &:hover { text-decoration: underline; } }
+}
+
+.callBtn {
+  width: 38px; height: 38px;
+  border-radius: $radius-full;
+  background: rgba($success, 0.12);
+  color: $success;
+  @include flex-center;
+  font-size: 0.9rem;
+  &:hover { background: $success; color: white; }
+}
+
+// ── Toggle ──────────────────────────────────────────────
+.toggleLabel {
+  display: flex; align-items: center; gap: $space-md;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+
+  input { display: none; }
+  input:checked + .toggleSlider {
+    background: $success;
+    &::before { transform: translateX(20px); }
+  }
+}
+
+.toggleSlider {
+  position: relative;
+  width: 44px; height: 24px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 12px;
+  transition: $transition;
+  flex-shrink: 0;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 18px; height: 18px;
+    background: white;
+    border-radius: 50%;
+    transition: $transition;
+  }
+}
+
+// ── Family Tracking ─────────────────────────────────────
+.familyList { @include flex-col; gap: $space-md; }
+
+.familyItem {
+  @include flex-between;
+  padding: $space-lg;
+  background: var(--overlay-bg);
+  border-radius: $radius-md;
+}
+
+.familyInfo {
+  strong { display: block; font-size: 0.95rem; margin-bottom: 2px; }
+  span { color: var(--text-dim); font-size: 0.8rem; }
+}

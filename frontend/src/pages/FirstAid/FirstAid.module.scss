@@ -1,0 +1,154 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.container { animation: fade-in 0.4s ease-out; }
+
+.header {
+  @include flex-between;
+  margin-bottom: $space-xl;
+  flex-wrap: wrap; gap: $space-lg;
+  h1 { font-size: 1.6rem; margin: 0; }
+  > p { color: var(--text-muted); margin: 0; font-size: 0.9rem; }
+}
+
+.searchBar {
+  position: relative; min-width: 300px;
+  @include mobile { min-width: 100%; }
+  input { @include input-field; background: var(--input-bg); padding-left: 40px; }
+}
+.searchIcon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-dim); }
+
+.filters {
+  display: flex; gap: $space-sm; margin-bottom: $space-xl; flex-wrap: wrap;
+}
+.filterBtn {
+  padding: 8px 18px; border-radius: $radius-pill; font-size: 0.85rem; font-weight: 500;
+  color: var(--text-dim); background: var(--bg-glass); border: 1px solid var(--border-glass);
+  transition: $transition-fast; cursor: pointer;
+  &:hover { color: var(--text-primary); }
+  &.active { background: rgba($danger, 0.12); color: $danger; border-color: rgba($danger, 0.2); }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: $space-xl;
+  margin-bottom: $space-3xl;
+}
+
+.guideCard {
+  @include glass-card; padding: $space-xl;
+  cursor: pointer;
+  h3 { font-size: 1.15rem; margin: 0 0 $space-sm; }
+  p { color: var(--text-muted); font-size: 0.88rem; margin: 0 0 $space-md; line-height: 1.5; }
+}
+
+.cardHeader { @include flex-between; margin-bottom: $space-lg; }
+
+.iconWrapper {
+  width: 48px; height: 48px; border-radius: $radius-md;
+  @include flex-center; font-size: 1.3rem;
+}
+
+.badge { padding: 3px 10px; border-radius: $radius-pill; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.badgeCrit { background: rgba($danger, 0.12); color: $danger; }
+.badgeStd { background: rgba($accent, 0.12); color: $accent; }
+
+.stepsPreview { font-size: 0.8rem; color: var(--text-dim); font-weight: 500; }
+
+// Emergency Numbers
+.emergencyNumbers {
+  @include glass-card; padding: $space-2xl;
+  h3 { font-size: 1.2rem; margin: 0 0 $space-lg; text-align: center; }
+}
+.numGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: $space-md; @include mobile { grid-template-columns: repeat(2, 1fr); } }
+.numCard {
+  text-align: center; padding: $space-lg; border-radius: $radius-md;
+  background: var(--overlay-bg); border: 1px solid var(--border-glass); text-decoration: none;
+  transition: $transition;
+  &:hover { border-color: $primary; transform: translateY(-2px); }
+  strong { display: block; font-size: 1.8rem; color: $primary; font-family: $font-heading; }
+  span { color: var(--text-muted); font-size: 0.8rem; }
+}
+
+// Detail View
+.backBtn {
+  display: inline-flex; align-items: center; gap: 8px;
+  color: var(--text-muted); font-size: 0.9rem; font-weight: 500;
+  margin-bottom: $space-xl;
+  &:hover { color: var(--text-primary); }
+}
+
+.detailHeader {
+  display: flex; align-items: center; gap: $space-xl;
+  margin-bottom: $space-2xl;
+  @include mobile { flex-direction: column; text-align: center; }
+  h1 { font-size: 2rem; margin: $space-sm 0; @include mobile { font-size: 1.5rem; } }
+}
+.detailIcon { width: 64px; height: 64px; border-radius: $radius-lg; @include flex-center; font-size: 1.8rem; flex-shrink: 0; }
+.when { color: var(--text-muted); font-size: 0.95rem; margin: 0; strong { color: var(--text-secondary); } }
+
+.warningBox {
+  display: flex; gap: $space-lg;
+  padding: $space-lg $space-xl;
+  background: rgba($warning, 0.08);
+  border: 1px solid rgba($warning, 0.15);
+  border-radius: $radius-md;
+  margin-bottom: $space-2xl;
+  svg { color: $warning; font-size: 1.3rem; flex-shrink: 0; margin-top: 2px; }
+  p { color: var(--text-muted); font-size: 0.88rem; margin: 0 0 $space-sm; &:last-child { margin: 0; } }
+}
+
+.stepsList {
+  @include glass-card; padding: $space-2xl;
+  margin-bottom: $space-xl;
+  h2 { font-size: 1.2rem; margin: 0 0 $space-lg; }
+}
+
+.progress { height: 6px; background: var(--overlay-bg); border-radius: 3px; margin-bottom: $space-sm; overflow: hidden; }
+.progressFill { height: 100%; background: linear-gradient(90deg, $success, $accent); border-radius: 3px; transition: width 0.4s ease; }
+.progressText { font-size: 0.78rem; color: var(--text-dim); display: block; margin-bottom: $space-xl; }
+
+.stepItem {
+  display: flex; gap: $space-lg;
+  padding: $space-lg;
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: $transition-fast;
+  border: 1px solid transparent;
+  margin-bottom: $space-sm;
+
+  &:hover { background: var(--overlay-bg); }
+  &.completed { opacity: 0.6; p { text-decoration: line-through; } }
+  &.important { border-color: rgba($danger, 0.15); background: rgba($danger, 0.03); }
+}
+
+.stepNum {
+  width: 36px; height: 36px; border-radius: $radius-full;
+  border: 2px solid var(--border-glass);
+  @include flex-center; font-size: 0.85rem; font-weight: 700;
+  color: var(--text-muted); flex-shrink: 0;
+}
+
+.stepContent {
+  flex: 1;
+  p { margin: 0; font-size: 0.95rem; line-height: 1.5; color: var(--text-secondary); }
+}
+
+.importantTag {
+  display: inline-block; margin-top: $space-sm;
+  padding: 2px 8px; border-radius: $radius-pill;
+  background: rgba($danger, 0.12); color: $danger;
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.5px;
+}
+
+.completedBanner {
+  @include glass-card; padding: $space-xl;
+  text-align: center;
+  border-color: rgba($success, 0.2);
+  background: rgba($success, 0.06);
+  font-weight: 600; font-size: 1rem;
+  color: $success;
+  display: flex; align-items: center; justify-content: center; gap: $space-md;
+  svg { font-size: 1.3rem; }
+}

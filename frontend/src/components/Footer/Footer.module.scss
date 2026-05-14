@@ -1,0 +1,48 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.footer {
+  background: var(--sidebar-bg);
+  border-top: 1px solid var(--border-glass);
+  padding: $space-3xl 0 0;
+  margin-top: auto;
+  transition: background 0.3s ease;
+}
+
+.footerContent {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: $space-2xl;
+  padding-bottom: $space-2xl;
+
+  @include mobile { grid-template-columns: 1fr; }
+}
+
+.brand {
+  .logo {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 1.4rem; font-family: $font-heading; font-weight: 800;
+    margin-bottom: $space-md;
+  }
+  p { color: var(--text-dim); max-width: 320px; font-size: 0.9rem; line-height: 1.6; }
+}
+
+.links, .socials {
+  h4 { color: var(--text-muted); margin-bottom: $space-lg; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+}
+
+.links ul {
+  @include flex-col; gap: $space-sm;
+  a { color: var(--text-dim); font-size: 0.88rem; &:hover { color: $primary; padding-left: 4px; } }
+}
+
+.socialIcons {
+  display: flex; gap: $space-lg;
+  a { color: var(--text-dim); font-size: 1.3rem; &:hover { color: $accent; transform: translateY(-3px); } }
+}
+
+.copyright {
+  text-align: center; padding: $space-lg 0;
+  border-top: 1px solid var(--border-glass);
+  color: var(--text-dim); font-size: 0.82rem;
+}

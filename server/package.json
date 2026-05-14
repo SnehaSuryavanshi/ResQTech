@@ -1,0 +1,11 @@
+{
+  "name": "resqai-server",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "ResQAI Server Launcher & Deployment Configuration",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  }
+}

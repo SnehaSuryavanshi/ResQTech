@@ -1,0 +1,209 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.sosContainer {
+  min-height: calc(100vh - 72px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: $space-xl;
+}
+
+.demoBanner {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 10px;
+  background: linear-gradient(90deg, rgba($warning, 0.9), rgba($warning, 0.8));
+  color: #000;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-align: center;
+  strong { margin: 0 4px; }
+}
+
+.triggerView { text-align: center; max-width: 500px; }
+
+.warningText {
+  margin-bottom: $space-3xl;
+  h1 {
+    font-size: 3rem; color: $danger;
+    letter-spacing: 6px; margin-bottom: $space-md;
+    text-shadow: 0 0 30px rgba($danger, 0.4);
+  }
+  p { color: var(--text-muted); font-size: 1.1rem; line-height: 1.7; }
+}
+
+.sosButton {
+  position: relative;
+  width: 220px; height: 220px;
+  border-radius: 50%;
+  margin: 0 auto $space-2xl;
+  @include flex-center;
+  background: none;
+
+  .btnContent {
+    position: relative; z-index: 10;
+    width: 180px; height: 180px;
+    background: linear-gradient(135deg, #ff0033, #aa0000);
+    border-radius: 50%;
+    @include flex-center;
+    box-shadow: 0 10px 40px rgba(255, 0, 51, 0.4), inset 0 5px 15px rgba(255,255,255,0.2);
+    border: 4px solid rgba(255,255,255,0.08);
+    transition: transform 0.1s;
+    span { font-size: 3.5rem; font-weight: 900; color: white; font-family: $font-heading; text-shadow: 0 2px 8px rgba(0,0,0,0.5); }
+  }
+
+  &:active .btnContent { transform: scale(0.94); }
+
+  .ripple1, .ripple2 {
+    position: absolute; inset: -3px;
+    border-radius: 50%;
+    border: 2px solid $danger;
+    animation: ripple-out 2s infinite ease-out;
+  }
+  .ripple2 { animation-delay: 1s; }
+}
+
+// ── Countdown ───────────────────────────────────────────
+.countdownWrap {
+  text-align: center;
+  margin-bottom: $space-2xl;
+  p { color: var(--text-muted); font-size: 1.1rem; margin-top: $space-lg; }
+}
+
+.countdownCircle {
+  width: 150px; height: 150px;
+  border-radius: 50%;
+  background: rgba($danger, 0.15);
+  border: 4px solid $danger;
+  @include flex-center;
+  margin: 0 auto;
+  box-shadow: 0 0 40px rgba($danger, 0.3);
+}
+
+.countdownNum {
+  font-size: 4rem;
+  font-weight: 900;
+  color: $danger;
+  font-family: $font-heading;
+}
+
+.cancelCountdown {
+  margin-top: $space-lg;
+  padding: 8px 24px;
+  border-radius: $radius-pill;
+  background: transparent;
+  border: 1px solid var(--border-glass);
+  color: var(--text-muted);
+  font-weight: 600;
+  &:hover { color: var(--text-primary); border-color: var(--card-hover-border); }
+}
+
+.offlineOption {
+  display: flex; align-items: center; justify-content: center;
+  gap: $space-md;
+  margin-top: $space-2xl;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  button {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 14px;
+    border-radius: $radius-pill;
+    background: rgba($warning, 0.12);
+    color: $warning;
+    font-weight: 600;
+    font-size: 0.82rem;
+    border: 1px solid rgba($warning, 0.2);
+    &:hover { background: rgba($warning, 0.2); }
+  }
+}
+
+// ── Active View ─────────────────────────────────────────
+.activeView {
+  width: 100%; max-width: 800px;
+  @include glass-elevated;
+  padding: $space-2xl;
+  border: 1px solid rgba($danger, 0.2);
+}
+
+.alertBanner {
+  background: rgba($danger, 0.15);
+  color: $danger;
+  padding: $space-md;
+  border-radius: $radius-md;
+  @include flex-center;
+  gap: 10px;
+  font-weight: 800; font-size: 1.1rem;
+  letter-spacing: 2px;
+  margin-bottom: $space-2xl;
+  .blinker {
+    width: 14px; height: 14px;
+    background: $danger; border-radius: 50%;
+    animation: pulse-ring 1s infinite;
+  }
+}
+
+.statusCards {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: $space-md; margin-bottom: $space-xl;
+  @include mobile { grid-template-columns: 1fr; }
+}
+
+.card {
+  background: var(--overlay-bg);
+  padding: $space-lg; border-radius: $radius-md;
+  display: flex; align-items: flex-start; gap: $space-md;
+  border: 1px solid var(--border-glass);
+  svg { font-size: 1.5rem; margin-top: 2px; flex-shrink: 0; }
+  h3 { font-size: 0.95rem; margin: 0 0 2px; }
+  p { color: var(--text-muted); font-size: 0.82rem; margin: 0; }
+  small { color: var(--text-dim); font-size: 0.72rem; }
+}
+
+.cardIconAccent { color: $accent; }
+.cardIconDanger { color: $danger; }
+.cardIconSuccess { color: $success; }
+.cardIconSecondary { color: $secondary; }
+.cardIconWarning { color: $warning; }
+
+.mapPreview {
+  width: 100%;
+  margin-bottom: $space-xl;
+  border-radius: $radius-md;
+  overflow: hidden;
+  border: 1px solid var(--border-glass);
+}
+
+.actions {
+  display: flex; gap: $space-md;
+  @include mobile { flex-direction: column; }
+}
+
+.callBtn, .callBtn112, .cancelBtn {
+  flex: 1; padding: $space-md;
+  border-radius: $radius-md;
+  font-weight: 700; font-size: 0.95rem;
+  @include flex-center; gap: 8px;
+  transition: $transition;
+  text-decoration: none;
+}
+
+.callBtn {
+  background: $danger; color: white;
+  &:hover { box-shadow: $shadow-glow-primary; transform: translateY(-2px); }
+}
+
+.callBtn112 {
+  background: $warning; color: #000;
+  &:hover { transform: translateY(-2px); }
+}
+
+.cancelBtn {
+  background: transparent;
+  border: 1px solid var(--border-glass);
+  color: var(--text-muted);
+  &:hover { background: var(--overlay-bg); color: var(--text-primary); }
+}

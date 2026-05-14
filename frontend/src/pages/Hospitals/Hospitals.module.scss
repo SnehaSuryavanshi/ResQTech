@@ -1,0 +1,237 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.page { animation: fade-in 0.4s ease-out; }
+
+.header {
+  @include flex-between;
+  margin-bottom: $space-xl;
+  flex-wrap: wrap;
+  gap: $space-lg;
+  h1 { font-size: 1.6rem; margin: 0; }
+  > p { color: var(--text-muted); margin: 0; font-size: 0.9rem; }
+}
+
+.searchBar {
+  position: relative;
+  min-width: 320px;
+  @include mobile { min-width: 100%; }
+  input {
+    @include input-field;
+    background: var(--input-bg);
+    padding-left: 40px;
+  }
+}
+
+.searchIcon {
+  position: absolute;
+  left: 14px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-dim);
+}
+
+// ── City Selector ───────────────────────────────────────
+.citySelector {
+  display: flex; align-items: center;
+  gap: $space-sm;
+  margin-bottom: $space-lg;
+  flex-wrap: wrap;
+  padding: $space-md;
+  background: var(--overlay-bg);
+  border-radius: $radius-lg;
+  border: 1px solid var(--border-glass);
+}
+
+.cityIcon { color: var(--text-dim); font-size: 1rem; margin-right: $space-sm; }
+
+.cityBtn {
+  padding: 6px 14px;
+  border-radius: $radius-pill;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  transition: $transition-fast;
+  cursor: pointer;
+  &:hover { color: var(--text-primary); background: var(--bg-glass); }
+  &.cityActive {
+    background: rgba($primary, 0.12);
+    color: $primary;
+    border-color: rgba($primary, 0.2);
+  }
+}
+
+.tabs {
+  display: flex; gap: $space-sm;
+  margin-bottom: $space-xl;
+  flex-wrap: wrap;
+}
+
+.tab {
+  padding: 8px 18px;
+  border-radius: $radius-pill;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-dim);
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  cursor: pointer;
+  transition: $transition-fast;
+  &:hover { color: var(--text-primary); border-color: var(--card-hover-border); }
+  &.active { background: rgba($primary, 0.12); color: $primary; border-color: rgba($primary, 0.2); }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: $space-xl;
+  @include mobile { grid-template-columns: 1fr; }
+}
+
+.card {
+  @include glass-card;
+  overflow: hidden;
+  position: relative;
+}
+
+.recBadge {
+  position: absolute; top: 0; right: 0;
+  background: linear-gradient(135deg, $warning, darken($warning, 10%));
+  color: #000;
+  padding: 4px 14px;
+  border-radius: 0 0 0 $radius-md;
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex; align-items: center; gap: 4px;
+  z-index: 2;
+}
+
+.scoreChip {
+  position: absolute; top: 12px; left: 12px;
+  background: rgba($secondary, 0.15);
+  color: $secondary;
+  padding: 2px 8px;
+  border-radius: $radius-pill;
+  font-size: 0.68rem;
+  font-weight: 700;
+  z-index: 2;
+}
+
+.cardBody { padding: $space-xl; }
+
+.cardTop {
+  @include flex-between;
+  margin-bottom: $space-md;
+  h3 { font-size: 1.05rem; margin: 0; flex: 1; padding-right: $space-md; }
+}
+
+.rating {
+  display: flex; align-items: center; gap: 4px;
+  color: $warning; font-weight: 700; font-size: 0.88rem;
+  flex-shrink: 0;
+}
+
+.address, .phone {
+  display: flex; align-items: center; gap: 6px;
+  color: var(--text-muted); font-size: 0.82rem;
+  margin: 0 0 $space-sm;
+  svg { flex-shrink: 0; font-size: 0.78rem; }
+}
+
+.tags {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-bottom: $space-md;
+}
+
+.tag {
+  padding: 3px 10px;
+  background: rgba($secondary, 0.1);
+  color: $secondary;
+  border-radius: $radius-pill;
+  font-size: 0.72rem;
+  font-weight: 500;
+}
+
+.statsRow {
+  display: flex; gap: $space-lg;
+  margin-bottom: $space-md;
+}
+
+.stat {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  svg { color: $accent; }
+}
+
+.badges {
+  display: flex; gap: $space-sm;
+  margin-bottom: $space-lg;
+}
+
+.openBadge {
+  padding: 2px 8px;
+  background: rgba($success, 0.12);
+  color: $success;
+  border-radius: $radius-pill;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.traumaBadge {
+  padding: 2px 8px;
+  background: rgba($danger, 0.12);
+  color: $danger;
+  border-radius: $radius-pill;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.cardActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $space-md;
+}
+
+.routeBtn, .bookBtn {
+  display: flex; align-items: center; justify-content: center;
+  gap: 6px;
+  padding: 10px;
+  border-radius: $radius-md;
+  font-weight: 600;
+  font-size: 0.82rem;
+  transition: $transition;
+  text-decoration: none;
+  &:hover { transform: translateY(-2px); }
+}
+
+.routeBtn {
+  background: rgba($success, 0.12);
+  color: $success;
+  border: 1px solid rgba($success, 0.2);
+  &:hover { background: $success; color: white; }
+}
+
+.bookBtn {
+  background: rgba($secondary, 0.12);
+  color: $secondary;
+  border: 1px solid rgba($secondary, 0.2);
+  &:hover { background: $secondary; color: white; }
+}
+
+.loadingGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $space-xl;
+  @include mobile { grid-template-columns: 1fr; }
+}
+
+.skeleton {
+  height: 300px;
+  background: var(--bg-glass);
+  border-radius: $radius-lg;
+  animation: shimmer 1.5s infinite;
+  background-size: 200% 100%;
+  background-image: linear-gradient(90deg, var(--bg-glass) 0%, var(--overlay-bg) 50%, var(--bg-glass) 100%);
+}

@@ -1,0 +1,373 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.landing { overflow: hidden; }
+
+// ── Hero ────────────────────────────────────────────────
+.hero {
+  position: relative;
+  min-height: 100vh;
+  padding-top: 72px;
+  @include flex-center;
+}
+
+.heroBg {
+  position: absolute; inset: 0;
+  overflow: hidden; z-index: 0;
+
+  .orb1 {
+    position: absolute; top: -20%; right: -10%;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba($primary, 0.12) 0%, transparent 70%);
+    border-radius: 50%; filter: blur(40px);
+    animation: float 10s ease-in-out infinite;
+  }
+  .orb2 {
+    position: absolute; bottom: -30%; left: -15%;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba($secondary, 0.1) 0%, transparent 70%);
+    border-radius: 50%; filter: blur(50px);
+    animation: float 12s ease-in-out infinite reverse;
+  }
+  .grid {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .scanline {
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom, transparent 0%, rgba($primary, 0.03) 50%, transparent 100%);
+    background-size: 100% 4px;
+    animation: scanline-move 8s linear infinite;
+    pointer-events: none;
+  }
+}
+
+@keyframes scanline-move {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+.heroInner {
+  position: relative; z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $space-3xl;
+  align-items: center;
+  padding: $space-3xl 0;
+
+  @include mobile {
+    grid-template-columns: 1fr;
+    text-align: center;
+    padding: $space-2xl 0;
+  }
+}
+
+.badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba($secondary, 0.12);
+  color: $secondary;
+  padding: 6px 16px;
+  border-radius: $radius-pill;
+  font-size: 0.8rem; font-weight: 600;
+  margin-bottom: $space-md;
+  border: 1px solid rgba($secondary, 0.2);
+}
+
+.liveIndicator {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: $danger;
+  margin-bottom: $space-lg;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.liveDot {
+  width: 8px; height: 8px;
+  background: $danger;
+  border-radius: 50%;
+  animation: pulse-ring 1.5s infinite;
+}
+
+.liveDotSmall {
+  width: 6px; height: 6px;
+  background: $success;
+  border-radius: 50%;
+  animation: pulse-ring 2s infinite;
+}
+
+.heroContent {
+  h1 {
+    font-size: clamp(2.2rem, 4.5vw, 3.5rem);
+    line-height: 1.08;
+    margin-bottom: $space-lg;
+    letter-spacing: -1px;
+  }
+}
+
+.gradientText { @include gradient-text; }
+
+.heroDesc {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  max-width: 520px;
+  margin-bottom: $space-xl;
+  line-height: 1.7;
+  @include mobile { margin: 0 auto $space-xl; }
+}
+
+// ── Trust Indicators ────────────────────────────────────
+.trustRow {
+  display: flex; flex-wrap: wrap; gap: $space-md $space-xl;
+  margin-bottom: $space-2xl;
+  @include mobile { justify-content: center; }
+}
+
+.trustItem {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  svg { color: $success; font-size: 0.9rem; }
+}
+
+.heroCta {
+  display: flex; gap: $space-lg;
+  @include mobile { justify-content: center; flex-direction: column; align-items: center; }
+}
+
+.ctaPrimary {
+  position: relative;
+  @include btn-primary;
+  padding: 0.9rem 2.2rem;
+  font-size: 1rem;
+}
+
+.ctaPulse {
+  position: absolute; inset: -4px;
+  border-radius: $radius-pill;
+  border: 2px solid $primary;
+  animation: ripple-out 2.5s ease-out infinite;
+  pointer-events: none;
+}
+
+.ctaSecondary {
+  @include btn-ghost;
+  padding: 0.9rem 2.2rem;
+  font-size: 1rem;
+  @include flex-center;
+  gap: 8px;
+}
+
+// ── Cockpit Panel ───────────────────────────────────────
+.heroVisual {
+  @include mobile { display: none; }
+}
+
+.cockpitPanel {
+  @include glass-elevated;
+  overflow: hidden;
+  animation: float-subtle 6s ease-in-out infinite;
+  border: 1px solid rgba($primary, 0.15);
+}
+
+.cockpitHeader {
+  @include flex-center;
+  gap: 8px;
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  background: rgba($primary, 0.05);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.cockpitGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $space-md;
+  padding: $space-lg;
+}
+
+.cockpitAction {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 8px;
+  padding: $space-lg $space-md;
+  border-radius: $radius-md;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid rgba(255,255,255,0.04);
+  cursor: pointer;
+  transition: $transition;
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    border-color: var(--action-color);
+    background: rgba(0,0,0,0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(var(--action-color), 0.15);
+  }
+
+  span { font-size: 0.78rem; font-weight: 600; color: var(--text-muted); }
+}
+
+.actionPulse {
+  position: absolute; inset: -2px;
+  border-radius: $radius-md;
+  border: 2px solid $danger;
+  animation: ripple-out 3s ease-out infinite;
+  pointer-events: none;
+}
+
+.cockpitIcon {
+  width: 42px; height: 42px;
+  border-radius: $radius-md;
+  @include flex-center;
+  font-size: 1.2rem;
+  color: var(--action-color);
+  background: rgba(var(--action-color), 0.12);
+}
+
+.cockpitStats {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: $space-md;
+  padding: $space-lg;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.miniStat {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(0,0,0,0.2);
+  padding: $space-md;
+  border-radius: $radius-md;
+  small { display: block; color: var(--text-dim); font-size: 0.7rem; }
+  strong { display: block; font-size: 0.85rem; }
+}
+
+.miniIcon {
+  width: 34px; height: 34px;
+  border-radius: $radius-sm;
+  @include flex-center;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+// ── Stats Bar ───────────────────────────────────────────
+.statsBar {
+  padding: $space-3xl 0;
+  border-top: 1px solid var(--border-glass);
+  border-bottom: 1px solid var(--border-glass);
+  background: var(--overlay-bg);
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $space-xl;
+  @include mobile { grid-template-columns: repeat(2, 1fr); }
+}
+
+.statItem {
+  text-align: center;
+  h3 { font-size: 2.2rem; font-weight: 800; @include gradient-text; margin-bottom: 4px; }
+  p { color: var(--text-dim); font-size: 0.85rem; font-weight: 500; }
+}
+
+// ── Features ────────────────────────────────────────────
+.features { padding: 6rem 0; }
+
+.sectionHeader { text-align: center; margin-bottom: $space-3xl; }
+
+.sectionBadge {
+  display: inline-block;
+  font-size: 0.8rem; font-weight: 600;
+  color: $accent;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: $space-md;
+}
+
+.sectionHeader h2 { font-size: 2.5rem; margin-bottom: $space-md; @include mobile { font-size: 2rem; } }
+.sectionHeader p { color: var(--text-muted); font-size: 1.1rem; max-width: 550px; margin: 0 auto; }
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $space-xl;
+  @include tablet { grid-template-columns: repeat(2, 1fr); }
+  @include mobile { grid-template-columns: 1fr; }
+}
+
+.featureCard {
+  @include glass-card;
+  padding: $space-2xl $space-xl;
+  cursor: default;
+  h3 { font-size: 1.25rem; margin-bottom: $space-sm; }
+  p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.7; }
+}
+
+.featureIcon {
+  width: 56px; height: 56px;
+  border-radius: $radius-md;
+  @include flex-center;
+  font-size: 1.5rem;
+  margin-bottom: $space-lg;
+}
+
+// ── Privacy Section ─────────────────────────────────────
+.privacySection { padding: 4rem 0; }
+
+.privacyCard {
+  @include glass;
+  padding: $space-3xl;
+  background: linear-gradient(135deg, rgba($accent, 0.05), rgba($secondary, 0.04));
+  border-color: rgba($accent, 0.12);
+}
+
+.privacyHeader {
+  text-align: center;
+  margin-bottom: $space-2xl;
+  h2 { font-size: 2rem; margin-bottom: $space-sm; }
+  p { color: var(--text-muted); font-size: 1rem; }
+}
+
+.lockIcon { font-size: 2rem; color: $accent; margin-bottom: $space-md; }
+
+.privacyGrid {
+  display: flex; flex-wrap: wrap;
+  justify-content: center;
+  gap: $space-xl $space-2xl;
+}
+
+.privacyItem {
+  display: flex; align-items: center; gap: $space-md;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.privacyEmoji { font-size: 1.3rem; }
+
+// ── CTA ─────────────────────────────────────────────────
+.cta { padding: 5rem 0 6rem; }
+
+.ctaCard {
+  text-align: center;
+  @include glass;
+  padding: $space-3xl $space-2xl;
+  background: linear-gradient(135deg, rgba($primary, 0.08), rgba($secondary, 0.06));
+  border-color: rgba($primary, 0.15);
+  h2 { font-size: 2.2rem; margin-bottom: $space-md; @include mobile { font-size: 1.8rem; } }
+  p { color: var(--text-muted); font-size: 1.1rem; margin-bottom: $space-2xl; }
+}
+
+.ctaActions {
+  display: flex; gap: $space-lg; justify-content: center;
+  @include mobile { flex-direction: column; align-items: center; }
+}

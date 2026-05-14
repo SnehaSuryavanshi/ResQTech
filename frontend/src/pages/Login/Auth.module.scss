@@ -1,0 +1,146 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.authPage {
+  min-height: calc(100vh - 72px);
+  @include flex-center;
+  padding: $space-xl;
+  position: relative;
+}
+
+.authBg {
+  position: absolute; inset: 0; z-index: 0; overflow: hidden;
+  .orb {
+    position: absolute; top: 20%; left: 50%;
+    transform: translateX(-50%);
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba($primary, 0.1) 0%, transparent 65%);
+    border-radius: 50%; filter: blur(60px);
+  }
+}
+
+.authCard {
+  position: relative; z-index: 1;
+  width: 100%; max-width: 440px;
+  @include glass-elevated;
+  padding: $space-2xl;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: $space-2xl;
+  .icon { font-size: 2rem; color: $primary; margin-bottom: $space-md; animation: heartbeat 2s ease-in-out infinite; }
+  h1 { font-size: 1.6rem; margin-bottom: $space-xs; }
+  p { color: var(--text-muted); font-size: 0.9rem; strong { color: $accent; } }
+}
+
+.form { @include flex-col; gap: $space-lg; }
+
+.field {
+  position: relative;
+  .fieldIcon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-dim); font-size: 0.9rem; }
+  input { @include input-field; padding-left: 42px; padding-right: 42px; background: var(--input-bg); }
+  .toggle { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--text-dim); font-size: 0.95rem; padding: 4px; &:hover { color: var(--text-primary); } }
+}
+
+.options { @include flex-between; font-size: 0.85rem; }
+.check { @include flex-center; gap: 6px; color: var(--text-muted); cursor: pointer; input { accent-color: $primary; } }
+.forgot { color: $accent; &:hover { text-decoration: underline; } }
+
+.submitBtn {
+  width: 100%; padding: 0.9rem;
+  background: linear-gradient(135deg, $primary, $secondary);
+  color: white; border-radius: $radius-md;
+  font-weight: 600; font-size: 1rem;
+  transition: $transition; @include flex-center;
+  &:hover:not(:disabled) { transform: translateY(-2px); box-shadow: $shadow-glow-primary; }
+  &:disabled { opacity: 0.7; cursor: wait; }
+}
+
+.spinner {
+  width: 20px; height: 20px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: rotate 0.6s linear infinite;
+}
+
+.divider {
+  text-align: center; margin: $space-xl 0 $space-lg; position: relative;
+  &::before { content: ''; position: absolute; left: 0; top: 50%; width: 100%; height: 1px; background: var(--border-glass); }
+  span { position: relative; background: var(--bg-card); padding: 0 $space-md; color: var(--text-dim); font-size: 0.8rem; }
+}
+
+.demoAccounts { display: flex; gap: $space-md; }
+
+.demoBtn {
+  flex: 1; padding: 0.6rem;
+  @include glass; font-size: 0.85rem;
+  color: var(--text-muted); transition: $transition;
+  &:hover { color: $accent; border-color: rgba($accent, 0.3); }
+}
+
+.redirect {
+  text-align: center; margin-top: $space-xl;
+  color: var(--text-dim); font-size: 0.9rem;
+  a { color: $primary; font-weight: 600; &:hover { text-decoration: underline; } }
+}
+
+// ── OTP Styles ──────────────────────────────────────────
+.demoOtpBanner {
+  text-align: center;
+  padding: $space-md;
+  background: rgba($success, 0.1);
+  border: 1px solid rgba($success, 0.2);
+  border-radius: $radius-md;
+  color: $success;
+  font-size: 0.88rem;
+  margin-bottom: $space-lg;
+  strong { font-family: 'Courier New', monospace; font-size: 1.2rem; letter-spacing: 3px; }
+}
+
+.otpContainer {
+  display: flex;
+  gap: $space-md;
+  justify-content: center;
+  padding: $space-md 0;
+}
+
+.otpInput {
+  width: 50px !important; height: 56px !important;
+  text-align: center !important;
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  font-family: 'Courier New', monospace !important;
+  background: var(--input-bg) !important;
+  border: 2px solid var(--border-glass) !important;
+  border-radius: $radius-md !important;
+  color: var(--text-primary) !important;
+  padding: 0 !important;
+  transition: $transition !important;
+
+  &:focus {
+    border-color: $primary !important;
+    box-shadow: 0 0 0 3px rgba($primary, 0.15) !important;
+    outline: none !important;
+  }
+}
+
+.otpActions {
+  display: flex;
+  justify-content: center;
+  gap: $space-xl;
+  margin-top: $space-xl;
+}
+
+.resendBtn {
+  display: flex; align-items: center; gap: 6px;
+  color: $accent; font-size: 0.85rem; font-weight: 500;
+  &:hover { text-decoration: underline; }
+  &:disabled { opacity: 0.5; }
+}
+
+.backBtn {
+  color: var(--text-dim); font-size: 0.85rem;
+  &:hover { color: var(--text-primary); }
+}

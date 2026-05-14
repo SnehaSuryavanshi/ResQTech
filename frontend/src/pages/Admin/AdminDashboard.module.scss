@@ -1,0 +1,57 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.container { padding: $space-md 0; }
+
+.header {
+  @include flex-between; margin-bottom: $space-2xl;
+  h1 { font-size: 1.8rem; margin: 0; }
+}
+
+.liveIndicator {
+  display: flex; align-items: center; gap: 8px;
+  color: $success; font-weight: 600; background: rgba($success, 0.1);
+  padding: 6px 14px; border-radius: $radius-pill;
+  .pulse { width: 8px; height: 8px; border-radius: 50%; background: $success; animation: pulse-ring 2s infinite; }
+}
+
+.statGrid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: $space-lg; margin-bottom: $space-2xl;
+}
+
+.statCard {
+  @include glass-card; padding: $space-lg; display: flex; align-items: center; gap: $space-lg;
+  .iconWrapper { width: 52px; height: 52px; border-radius: $radius-md; @include flex-center; font-size: 1.5rem; flex-shrink: 0; }
+  .statInfo p { color: $text-dim; font-size: 0.82rem; margin: 0 0 2px; }
+  .statInfo h2 { font-size: 1.6rem; margin: 0; }
+}
+
+.mainGrid {
+  display: grid; grid-template-columns: 2fr 1fr; gap: $space-xl;
+  @include mobile { grid-template-columns: 1fr; }
+}
+
+.chartSection, .feedSection {
+  @include glass-card; padding: $space-xl;
+  h3 { margin-bottom: $space-lg; font-size: 1.1rem; }
+}
+
+.mockChart {
+  height: 250px; border-bottom: 1px solid rgba(255,255,255,0.06);
+  display: flex; align-items: flex-end; justify-content: space-around; padding-bottom: $space-md; gap: 8px;
+  .bar { width: 36px; background: linear-gradient(to top, $primary, $accent); border-radius: 4px 4px 0 0; opacity: 0.85; }
+}
+
+.feedList { @include flex-col; gap: $space-md; }
+
+.feedItem {
+  display: flex; gap: $space-md; padding: $space-md; background: rgba(0,0,0,0.15); border-radius: $radius-md;
+  .tag {
+    padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; height: fit-content;
+    &.danger { background: $danger; color: white; }
+    &.warning { background: $warning; color: white; }
+    &.info { background: $accent; color: white; }
+  }
+  .feedContent p { margin: 0 0 3px; font-size: 0.88rem; }
+  .feedContent span { font-size: 0.75rem; color: $text-dim; }
+}

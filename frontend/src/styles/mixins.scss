@@ -1,0 +1,152 @@
+@use './variables' as *;
+
+// ── Layout ──────────────────────────────────────────────
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+// ── Glassmorphism ───────────────────────────────────────
+@mixin glass {
+  background: $card-glass;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid $border-glass;
+  border-radius: $radius-lg;
+}
+
+@mixin glass-card {
+  @include glass;
+  box-shadow: $shadow-sm;
+  transition: $transition;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: $shadow-md;
+  }
+}
+
+@mixin glass-elevated {
+  background: rgba(17, 24, 39, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: $radius-lg;
+  box-shadow: $shadow-md;
+}
+
+// ── Buttons ─────────────────────────────────────────────
+@mixin btn-primary {
+  background: linear-gradient(135deg, $primary, darken($primary, 12%));
+  color: white;
+  border: none;
+  padding: 0.75rem 1.75rem;
+  border-radius: $radius-pill;
+  font-weight: 600;
+  font-family: $font-body;
+  cursor: pointer;
+  transition: $transition;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-glow-primary;
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+@mixin btn-ghost {
+  background: transparent;
+  color: $text-light;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 0.75rem 1.75rem;
+  border-radius: $radius-pill;
+  font-weight: 500;
+  font-family: $font-body;
+  cursor: pointer;
+  transition: $transition;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+}
+
+// ── Text ────────────────────────────────────────────────
+@mixin gradient-text {
+  background: linear-gradient(135deg, $primary, $accent);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+// ── Inputs ──────────────────────────────────────────────
+@mixin input-field {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: $radius-md;
+  color: $text-white;
+  font-family: $font-body;
+  font-size: 0.95rem;
+  transition: $transition;
+  outline: none;
+
+  &::placeholder {
+    color: $text-dim;
+  }
+
+  &:focus {
+    border-color: $primary;
+    box-shadow: 0 0 0 3px rgba(255, 59, 92, 0.15);
+  }
+}
+
+// ── Responsive ──────────────────────────────────────────
+@mixin mobile {
+  @media (max-width: #{$bp-md - 1px}) { @content; }
+}
+
+@mixin tablet {
+  @media (min-width: $bp-md) and (max-width: #{$bp-lg - 1px}) { @content; }
+}
+
+@mixin tablet-up {
+  @media (min-width: $bp-md) { @content; }
+}
+
+@mixin desktop {
+  @media (min-width: $bp-lg) { @content; }
+}
+
+@mixin large {
+  @media (min-width: $bp-xl) { @content; }
+}
+
+// ── Scrollbar ───────────────────────────────────────────
+@mixin custom-scrollbar {
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 3px;
+  }
+}
