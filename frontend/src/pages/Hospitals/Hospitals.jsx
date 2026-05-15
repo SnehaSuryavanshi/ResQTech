@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { FaStar, FaBed, FaRoute, FaSearch, FaHeartbeat, FaMapMarkerAlt, FaPhone, FaClock, FaTrophy, FaCity } from 'react-icons/fa';
+import React, { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FaStar, FaBed, FaRoute, FaSearch, FaHeartbeat, FaMapMarkerAlt, FaPhone, FaClock, FaTrophy, FaCity, FaHourglass, FaSortAmountDown } from 'react-icons/fa';
 import { hospitalAPI } from '../../services/api';
 import { MAHARASHTRA_HOSPITALS, CITY_CENTERS, recommendHospitals, searchHospitalsByCity } from '../../data/hospitalDatabase';
+import { estimateETA, getTrafficMultiplier, getTrafficLevel, TRAFFIC_DISPLAY } from '../../services/trafficService';
+import GoldenHourTimer from '../../components/GoldenHourTimer/GoldenHourTimer';
 import styles from './Hospitals.module.scss';
 
 const Hospitals = () => {
@@ -12,10 +14,24 @@ const Hospitals = () => {
   const [search, setSearch] = useState('');
   const [selectedCity, setSelectedCity] = useState('jalgaon');
   const [emergencyType, setEmergencyType] = useState('');
+  const [sortByETA, setSortByETA] = useState(false);
+  const [currentTraffic, setCurrentTraffic] = useState(() => {
+    const m = getTrafficMultiplier();
+    return { multiplier: m, level: getTrafficLevel(m) };
+  });
 
   useEffect(() => {
     loadHospitals(selectedCity);
   }, [selectedCity]);
+
+  // Update traffic indicator every 30 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const m = getTrafficMultiplier();
+      setCurrentTraffic({ multiplier: m, level: getTrafficLevel(m) });
+    }, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   const loadHospitals = async (city) => {
     setLoading(true);
@@ -57,7 +73,17 @@ const Hospitals = () => {
     return true;
   });
 
+  // Sort by ETA if toggle is on
+  const displayHospitals = sortByETA
+    ? [...filtered].sort((a, b) => {
+        const etaA = estimateETA(a.distance || 0, currentTraffic.multiplier).etaMinutes;
+        const etaB = estimateETA(b.distance || 0, currentTraffic.multiplier).etaMinutes;
+        return etaA - etaB;
+      })
+    : filtered;
+
   const cityLabel = CITY_CENTERS[selectedCity]?.label || selectedCity;
+  const trafficInfo = TRAFFIC_DISPLAY[currentTraffic.level];
 
   return (
     <div className={styles.page}>
@@ -71,6 +97,37 @@ const Hospitals = () => {
           <input placeholder="Search hospitals or city (e.g. Pune, Mumbai, Nashik)..." value={search} onChange={handleSearch} />
         </div>
       </header>
+
+      {/* ── Golden Hour Info Banner ───────────────────────── */}
+      <motion.div
+        className={styles.goldenBanner}
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+      >
+        <div className={styles.goldenBannerLeft}>
+          <FaHourglass className={styles.goldenBannerIcon} />
+          <div>
+            <h3 className={styles.goldenBannerTitle}>⏱ Golden Hour Active</h3>
+            <p className={styles.goldenBannerDesc}>
+              The "Golden Hour" — first 60 minutes after injury — is critical. Each card shows real-time ETA with traffic.
+            </p>
+          </div>
+        </div>
+        <div className={styles.goldenBannerRight}>
+          <div className={styles.trafficBadge}>
+            <span className={styles.trafficBadgeDot} style={{ backgroundColor: trafficInfo.color }} />
+            <span className={styles.trafficBadgeLabel}>{trafficInfo.label}</span>
+          </div>
+          <button
+            className={`${styles.sortEtaBtn} ${sortByETA ? styles.sortEtaActive : ''}`}
+            onClick={() => setSortByETA(!sortByETA)}
+          >
+            <FaSortAmountDown />
+            {sortByETA ? 'Sorted by ETA' : 'Sort by Fastest'}
+          </button>
+        </div>
+      </motion.div>
 
       {/* City Selector */}
       <div className={styles.citySelector}>
@@ -96,7 +153,7 @@ const Hospitals = () => {
         </div>
       ) : (
         <div className={styles.grid}>
-          {filtered.map((h, i) => (
+          {displayHospitals.map((h, i) => (
             <motion.div key={h._id} className={styles.card} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }} whileHover={{ y: -6 }}>
               {/* Recommendation badge */}
               {i === 0 && <div className={styles.recBadge}><FaTrophy /> Best Recommended</div>}
@@ -113,6 +170,12 @@ const Hospitals = () => {
                   {h.specialties?.slice(0, 4).map((s, j) => <span key={j} className={styles.tag}>{s}</span>)}
                   {h.specialties?.length > 4 && <span className={styles.tag}>+{h.specialties.length - 4}</span>}
                 </div>
+
+                {/* ── Golden Hour Timer ──────────────────── */}
+                {h.distance > 0 && (
+                  <GoldenHourTimer distanceKm={h.distance} />
+                )}
+
                 <div className={styles.statsRow}>
                   <div className={styles.stat}><FaBed /> <span>{h.beds?.general?.available || 0} General</span></div>
                   <div className={styles.stat}><FaHeartbeat /> <span>{h.beds?.icu?.available || 0} ICU</span></div>

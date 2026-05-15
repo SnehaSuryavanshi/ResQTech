@@ -1,0 +1,186 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+// ═══════════════════════════════════════════════════════
+//  Golden Hour Timer — Component Styles
+// ═══════════════════════════════════════════════════════
+
+.container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: $radius-md;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: $space-md;
+  position: relative;
+  overflow: hidden;
+  transition: $transition;
+
+  // Subtle shimmer on the left edge based on urgency
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    border-radius: 3px 0 0 3px;
+    transition: background 0.4s ease;
+  }
+
+  &.safe::before {
+    background: linear-gradient(180deg, $success, rgba($success, 0.3));
+  }
+  &.warning::before {
+    background: linear-gradient(180deg, $warning, rgba($warning, 0.3));
+  }
+  &.critical::before {
+    background: linear-gradient(180deg, $danger, rgba($danger, 0.3));
+    animation: leftEdgePulse 1.5s ease-in-out infinite;
+  }
+  &.expired::before {
+    background: linear-gradient(180deg, #dc2626, rgba(#dc2626, 0.3));
+    animation: leftEdgePulse 1s ease-in-out infinite;
+  }
+
+  &.compact {
+    padding: 6px 10px;
+    gap: 8px;
+  }
+}
+
+// ── Circular Ring ───────────────────────────────────────
+
+.ringWrapper {
+  position: relative;
+  flex-shrink: 0;
+  @include flex-center;
+}
+
+.ringSvg {
+  display: block;
+}
+
+.ringCenter {
+  position: absolute;
+  inset: 0;
+  @include flex-center;
+  flex-direction: column;
+  gap: 0;
+  pointer-events: none;
+}
+
+.etaNumber {
+  font-family: $font-heading;
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1;
+  letter-spacing: -0.02em;
+
+  .compact & {
+    font-size: 0.85rem;
+  }
+}
+
+.etaUnit {
+  font-size: 0.52rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 1px;
+
+  .compact & {
+    font-size: 0.45rem;
+  }
+}
+
+.pulseRing {
+  position: absolute;
+  inset: -4px;
+  border-radius: $radius-full;
+  border: 2px solid transparent;
+  pointer-events: none;
+}
+
+// ── Info Section ────────────────────────────────────────
+
+.infoSection {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.etaLine {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: var(--text-primary, $text-light);
+
+  strong {
+    font-weight: 700;
+    color: $text-white;
+  }
+}
+
+.etaIcon {
+  font-size: 0.72rem;
+  color: $accent;
+  flex-shrink: 0;
+}
+
+.etaText {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.trafficLine {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.7rem;
+}
+
+.trafficDot {
+  width: 7px;
+  height: 7px;
+  border-radius: $radius-full;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px currentColor;
+}
+
+.trafficLabel {
+  color: var(--text-muted, $text-muted);
+  font-weight: 500;
+}
+
+.goldenLine {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  margin-top: 1px;
+}
+
+.goldenIcon {
+  font-size: 0.65rem;
+  flex-shrink: 0;
+}
+
+.goldenLabel {
+  white-space: nowrap;
+}
+
+// ── Animations ──────────────────────────────────────────
+
+@keyframes leftEdgePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
