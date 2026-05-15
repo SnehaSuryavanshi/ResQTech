@@ -18,6 +18,7 @@ import emergencyRoutes from './routes/emergencies.js';
 import ambulanceRoutes from './routes/ambulances.js';
 import aiRoutes from './routes/ai.js';
 import adminRoutes from './routes/admin.js';
+import sosRoutes from './routes/sos.js';
 
 // Load env vars
 dotenv.config();
@@ -64,6 +65,7 @@ app.use('/api/emergencies', emergencyRoutes);
 app.use('/api/ambulances', ambulanceRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/sos', sosRoutes);
 
 // Health check — includes DB status
 app.get('/api/health', (req, res) => {

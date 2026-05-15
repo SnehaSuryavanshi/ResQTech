@@ -1,0 +1,461 @@
+/* ═══════════════════════════════════════════════════════
+   ResQAI — Zomato-Style Live Tracking Page
+   Patient sees real ambulance GPS on Leaflet map
+   ═══════════════════════════════════════════════════════ */
+
+.tracking-page {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 72px);
+  overflow: hidden;
+  background: #0a0f1e;
+}
+
+/* ── Status Bar ─────────────────────────────────────── */
+.tracking-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background: rgba(10, 15, 30, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  z-index: 100;
+  flex-shrink: 0;
+}
+
+.tracking-status-arrived {
+  background: rgba(34, 197, 94, 0.1);
+  border-bottom-color: rgba(34, 197, 94, 0.2);
+}
+
+.tracking-status-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #ff3b5c;
+}
+
+.tracking-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.tracking-dot-connected {
+  background: #22c55e;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+  animation: tracking-blink 2s infinite;
+}
+
+.tracking-dot-disconnected {
+  background: #f59e0b;
+  animation: tracking-blink 0.8s infinite;
+}
+
+@keyframes tracking-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.tracking-session-id {
+  font-size: 0.7rem;
+  color: #64748b;
+  font-family: monospace;
+}
+
+/* ── Map Container ──────────────────────────────────── */
+.tracking-map-container {
+  flex: 1;
+  position: relative;
+  min-height: 0;
+}
+
+.tracking-leaflet-map {
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Leaflet marker styling */
+.tracking-leaflet-marker {
+  background: none !important;
+  border: none !important;
+}
+
+.tracking-amb-dot,
+.tracking-patient-dot {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  position: relative;
+  z-index: 2;
+}
+
+.tracking-amb-dot {
+  background: linear-gradient(135deg, #00c2ff, #0080aa);
+  box-shadow: 0 0 25px rgba(0, 194, 255, 0.5);
+  border: 3px solid white;
+  animation: tracking-amb-bounce 1.5s ease-in-out infinite;
+}
+
+@keyframes tracking-amb-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.tracking-patient-dot {
+  background: linear-gradient(135deg, #ff3b5c, #cc0028);
+  box-shadow: 0 0 25px rgba(255, 59, 92, 0.5);
+  border: 3px solid white;
+}
+
+.tracking-amb-pulse,
+.tracking-patient-pulse {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  animation: tracking-marker-pulse 2s infinite;
+}
+
+.tracking-amb-pulse { background: rgba(0, 194, 255, 0.2); }
+.tracking-patient-pulse { background: rgba(255, 59, 92, 0.2); }
+
+@keyframes tracking-marker-pulse {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(2.8); opacity: 0; }
+}
+
+/* ── Waiting for Driver Overlay ─────────────────────── */
+.tracking-waiting-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: linear-gradient(transparent, rgba(10, 15, 30, 0.95) 30%);
+  padding: 60px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+}
+
+.tracking-waiting-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: #00c2ff;
+  border-radius: 50%;
+  animation: tracking-spin 0.8s linear infinite;
+}
+
+@keyframes tracking-spin {
+  to { transform: rotate(360deg); }
+}
+
+.tracking-waiting-overlay h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  margin: 4px 0 0;
+}
+
+.tracking-waiting-overlay p {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin: 0;
+}
+
+/* Share section */
+.tracking-share-section {
+  margin-top: 8px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.tracking-share-hint {
+  font-size: 0.72rem;
+  color: #64748b;
+  margin: 0 0 6px;
+}
+
+.tracking-share-url-box {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 8px 10px;
+  gap: 8px;
+}
+
+.tracking-share-url {
+  flex: 1;
+  font-size: 0.7rem;
+  color: #00c2ff;
+  font-family: monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tracking-copy-btn {
+  background: rgba(0, 194, 255, 0.15);
+  border: 1px solid rgba(0, 194, 255, 0.3);
+  color: #00c2ff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.tracking-whatsapp-btn {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 10px 20px;
+  background: #25d366;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+}
+
+.tracking-whatsapp-btn:hover {
+  background: #1eba59;
+  transform: translateY(-1px);
+}
+
+/* ── Bottom Panel ───────────────────────────────────── */
+.tracking-bottom-panel {
+  flex-shrink: 0;
+  background: rgba(17, 24, 39, 0.97);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 14px 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Arrived banner */
+.tracking-arrived-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 10px;
+  color: #22c55e;
+  font-weight: 800;
+  font-size: 1rem;
+  letter-spacing: 2px;
+}
+
+/* Progress bar */
+.tracking-progress-container { width: 100%; }
+
+.tracking-progress-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.tracking-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff3b5c, #00c2ff, #22c55e);
+  border-radius: 6px;
+  box-shadow: 0 0 10px rgba(0, 194, 255, 0.4);
+}
+
+.tracking-progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.6rem;
+  color: #64748b;
+}
+
+/* Metrics */
+.tracking-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+
+.tracking-metric-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+}
+
+.tracking-metric-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.tracking-metric-eta .tracking-metric-icon { color: #f59e0b; }
+.tracking-metric-distance .tracking-metric-icon { color: #00c2ff; }
+
+.tracking-metric-value {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #e2e8f0;
+  line-height: 1.2;
+}
+
+.tracking-metric-label {
+  display: block;
+  font-size: 0.6rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Live dot */
+.tracking-live-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #64748b;
+  flex-shrink: 0;
+}
+
+.tracking-live-active {
+  background: #22c55e;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.6);
+  animation: tracking-blink 1s infinite;
+}
+
+.tracking-metric-live { border-color: rgba(34, 197, 94, 0.15); }
+.tracking-metric-waiting { border-color: rgba(245, 158, 11, 0.15); }
+
+/* Call status */
+.tracking-call-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: #94a3b8;
+}
+
+.tracking-call-icon { color: #ff3b5c; font-size: 0.75rem; }
+.tracking-call-initiated { color: #f59e0b; }
+.tracking-call-ringing { color: #f59e0b; animation: tracking-blink 0.5s infinite; }
+.tracking-call-in-progress { color: #22c55e; }
+.tracking-call-completed { color: #22c55e; }
+.tracking-call-failed { color: #ef4444; }
+
+/* Cancel button */
+.tracking-cancel-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 10px;
+  color: #ef4444;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tracking-cancel-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+}
+
+/* ── Modal ──────────────────────────────────────────── */
+.tracking-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.tracking-modal {
+  background: #1a2235;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 28px;
+  max-width: 380px;
+  width: 100%;
+  text-align: center;
+}
+
+.tracking-modal-icon { font-size: 2.2rem; color: #f59e0b; margin-bottom: 0.8rem; }
+.tracking-modal h3 { font-size: 1.2rem; font-weight: 800; color: #e2e8f0; margin: 0 0 0.4rem; }
+.tracking-modal p { font-size: 0.85rem; color: #94a3b8; margin: 0 0 1.2rem; line-height: 1.5; }
+
+.tracking-modal-actions { display: flex; gap: 10px; }
+
+.tracking-modal-cancel,
+.tracking-modal-confirm {
+  flex: 1;
+  padding: 11px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.tracking-modal-cancel {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
+}
+
+.tracking-modal-confirm {
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  border: none;
+  color: white;
+}
+
+/* ── Responsive ─────────────────────────────────────── */
+@media (max-width: 767px) {
+  .tracking-metrics {
+    gap: 4px;
+  }
+
+  .tracking-metric-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 4px;
+    padding: 8px 6px;
+  }
+
+  .tracking-bottom-panel {
+    padding: 10px 14px 14px;
+    gap: 8px;
+  }
+}

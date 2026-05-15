@@ -2,6 +2,7 @@ import Emergency from '../models/Emergency.js';
 import Hospital from '../models/Hospital.js';
 import Ambulance from '../models/Ambulance.js';
 import aiService from '../services/aiService.js';
+import { getConnectionStatus } from '../config/db.js';
 
 /**
  * @desc    Create emergency + AI analysis
@@ -10,16 +11,32 @@ import aiService from '../services/aiService.js';
 export const createEmergency = async (req, res, next) => {
   try {
     const { symptoms, description, location } = req.body;
+    const dbConnected = getConnectionStatus();
 
     // AI analysis
     const aiAnalysis = await aiService.analyzeSymptoms(symptoms || description);
 
+    if (!dbConnected) {
+      // Demo mode — return simulated emergency
+      return res.status(201).json({
+        success: true,
+        emergency: {
+          _id: `demo_e_${Date.now()}`,
+          userId: req.user?._id || 'demo_user',
+          symptoms, description, aiAnalysis, location,
+          status: 'analyzing',
+          timeline: [
+            { status: 'pending', message: 'Emergency created', timestamp: new Date() },
+            { status: 'analyzing', message: 'AI analysis complete', timestamp: new Date() }
+          ]
+        },
+        recommendedHospitals: []
+      });
+    }
+
     const emergency = await Emergency.create({
       userId: req.user._id,
-      symptoms,
-      description,
-      aiAnalysis,
-      location,
+      symptoms, description, aiAnalysis, location,
       status: 'analyzing',
       timeline: [
         { status: 'pending', message: 'Emergency created', timestamp: new Date() },
@@ -27,11 +44,9 @@ export const createEmergency = async (req, res, next) => {
       ]
     });
 
-    // Find and rank nearby hospitals
     const hospitals = await Hospital.find({ isActive: true });
     const ranked = aiService.rankHospitals(hospitals, emergency);
 
-    // Emit via Socket.IO
     const io = req.app.get('io');
     if (io) {
       io.emit('newEmergency', {
@@ -57,6 +72,12 @@ export const createEmergency = async (req, res, next) => {
  */
 export const getEmergencies = async (req, res, next) => {
   try {
+    const dbConnected = getConnectionStatus();
+
+    if (!dbConnected) {
+      return res.json({ success: true, emergencies: [] });
+    }
+
     const emergencies = await Emergency.find({ userId: req.user._id })
       .populate('hospitalId', 'name address phone')
       .sort({ createdAt: -1 })
@@ -74,6 +95,12 @@ export const getEmergencies = async (req, res, next) => {
  */
 export const getEmergency = async (req, res, next) => {
   try {
+    const dbConnected = getConnectionStatus();
+
+    if (!dbConnected) {
+      return res.status(404).json({ success: false, message: 'Database offline' });
+    }
+
     const emergency = await Emergency.findById(req.params.id)
       .populate('hospitalId')
       .populate('ambulanceId');
@@ -93,6 +120,15 @@ export const getEmergency = async (req, res, next) => {
  */
 export const triggerSOS = async (req, res, next) => {
   try {
+    const dbConnected = getConnectionStatus();
+
+    if (!dbConnected) {
+      return res.json({
+        success: true,
+        emergency: { _id: req.params.id, sosTriggered: true, status: 'dispatched' }
+      });
+    }
+
     const emergency = await Emergency.findById(req.params.id);
     if (!emergency) {
       return res.status(404).json({ success: false, message: 'Emergency not found' });

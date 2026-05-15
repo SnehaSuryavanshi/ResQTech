@@ -12,6 +12,8 @@ import Chat from './pages/Chat/Chat';
 import MapPage from './pages/Map/MapPage';
 import Hospitals from './pages/Hospitals/Hospitals';
 import SOS from './pages/SOS/SOS';
+import SOSTracking from './pages/SOS/SOSTracking';
+import DriverTrack from './pages/SOS/DriverTrack';
 import FirstAid from './pages/FirstAid/FirstAid';
 import AmbulanceTracking from './pages/Ambulance/AmbulanceTracking';
 import Profile from './pages/Profile/Profile';
@@ -21,6 +23,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Standalone route — Driver tracking page (opened from phone SMS) */}
+        <Route path="/driver-track/:trackingSessionId" element={<DriverTrack />} />
+
         {/* Public Routes (with Navbar + Footer) */}
         <Route element={<MainLayout />}>
           <Route path="/" element={<Landing />} />
@@ -35,6 +40,7 @@ function App() {
           <Route path="/map" element={<MapPage />} />
           <Route path="/hospitals" element={<Hospitals />} />
           <Route path="/sos" element={<SOS />} />
+          <Route path="/sos/tracking/:trackingSessionId" element={<SOSTracking />} />
           <Route path="/first-aid" element={<FirstAid />} />
           <Route path="/ambulance" element={<AmbulanceTracking />} />
           <Route path="/profile" element={<Profile />} />
@@ -46,3 +52,5 @@ function App() {
 }
 
 export default App;
+
+

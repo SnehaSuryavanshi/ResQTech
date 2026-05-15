@@ -76,6 +76,14 @@ export const adminAPI = {
   getAllEmergencies: () => api.get('/admin/emergencies'),
 };
 
+// ── SOS ─────────────────────────────────────────────────
+export const sosAPI = {
+  trigger: (data) => api.post('/sos', data),
+  getStatus: (trackingSessionId) => api.get(`/sos/${trackingSessionId}`),
+  cancel: (trackingSessionId) => api.post(`/sos/${trackingSessionId}/cancel`),
+  updateLocation: (trackingSessionId, data) => api.post(`/sos/${trackingSessionId}/location`, data),
+};
+
 // ── Health ──────────────────────────────────────────────
 export const healthCheck = () => api.get('/health');
 

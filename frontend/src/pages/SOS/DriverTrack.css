@@ -1,0 +1,347 @@
+/* ═══════════════════════════════════════════════════════
+   ResQAI — Driver GPS Tracking Page (Mobile-First)
+   Opened by ambulance person from SMS link
+   ═══════════════════════════════════════════════════════ */
+
+.driver-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #0a0f1e;
+  color: #e2e8f0;
+  font-family: 'Poppins', 'Inter', sans-serif;
+  overflow: hidden;
+}
+
+/* ── Header ──────────────────────────────────────────── */
+.driver-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: rgba(10, 15, 30, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  z-index: 100;
+  flex-shrink: 0;
+}
+
+.driver-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.driver-logo {
+  font-weight: 800;
+  font-size: 1rem;
+  color: #ff3b5c;
+}
+
+.driver-session {
+  font-size: 0.65rem;
+  color: #64748b;
+  font-family: monospace;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.driver-status-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+.driver-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  animation: driver-pulse 1.5s infinite;
+}
+
+@keyframes driver-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.driver-status-sharing {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+}
+.driver-status-sharing .driver-status-dot { background: #22c55e; box-shadow: 0 0 8px rgba(34, 197, 94, 0.6); }
+
+.driver-status-connecting {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+}
+.driver-status-connecting .driver-status-dot { background: #f59e0b; }
+
+.driver-status-error {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+.driver-status-error .driver-status-dot { background: #ef4444; }
+
+.driver-status-stopped {
+  background: rgba(100, 116, 139, 0.15);
+  color: #94a3b8;
+}
+.driver-status-stopped .driver-status-dot { background: #94a3b8; animation: none; }
+
+/* ── Map ─────────────────────────────────────────────── */
+.driver-map-container {
+  flex: 1;
+  position: relative;
+  min-height: 0;
+}
+
+.driver-leaflet-map {
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Leaflet marker overrides */
+.driver-marker-icon,
+.patient-marker-icon {
+  background: none !important;
+  border: none !important;
+}
+
+.driver-marker-dot,
+.patient-marker-dot {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  position: relative;
+  z-index: 2;
+}
+
+.driver-marker-dot {
+  background: linear-gradient(135deg, #00c2ff, #0080aa);
+  box-shadow: 0 0 20px rgba(0, 194, 255, 0.5);
+  border: 3px solid white;
+}
+
+.patient-marker-dot {
+  background: linear-gradient(135deg, #ff3b5c, #cc0028);
+  box-shadow: 0 0 20px rgba(255, 59, 92, 0.5);
+  border: 3px solid white;
+}
+
+.driver-marker-pulse,
+.patient-marker-pulse {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  animation: marker-pulse-anim 2s infinite;
+}
+
+.driver-marker-pulse { background: rgba(0, 194, 255, 0.25); }
+.patient-marker-pulse { background: rgba(255, 59, 92, 0.25); }
+
+@keyframes marker-pulse-anim {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+/* Map loading */
+.driver-map-loading {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: #94a3b8;
+  text-align: center;
+  padding: 20px;
+}
+
+.driver-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: #00c2ff;
+  border-radius: 50%;
+  animation: driver-spin 0.8s linear infinite;
+}
+
+@keyframes driver-spin {
+  to { transform: rotate(360deg); }
+}
+
+.driver-retry-btn {
+  padding: 10px 24px;
+  background: #00c2ff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+/* ── Bottom Panel ────────────────────────────────────── */
+.driver-bottom-panel {
+  flex-shrink: 0;
+  background: rgba(17, 24, 39, 0.97);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 14px 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Metrics row */
+.driver-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.driver-metric {
+  text-align: center;
+  padding: 8px 4px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+}
+
+.driver-metric-value {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #e2e8f0;
+}
+
+.driver-metric-label {
+  display: block;
+  font-size: 0.58rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+
+/* Distance card */
+.driver-distance-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: rgba(255, 59, 92, 0.08);
+  border: 1px solid rgba(255, 59, 92, 0.2);
+  border-radius: 10px;
+}
+
+.driver-distance-icon { font-size: 1.5rem; }
+
+.driver-distance-value {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #ff3b5c;
+}
+
+.driver-distance-label {
+  display: block;
+  font-size: 0.7rem;
+  color: #94a3b8;
+}
+
+/* Action buttons */
+.driver-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.driver-navigate-btn {
+  flex: 1;
+  padding: 12px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.driver-navigate-btn:active { transform: scale(0.97); }
+
+.driver-stop-btn {
+  padding: 12px 16px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 10px;
+  color: #ef4444;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+/* Timer bar */
+.driver-timer-bar {
+  position: relative;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.driver-timer-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #22c55e, #f59e0b, #ef4444);
+  border-radius: 4px;
+  transition: width 1s linear;
+}
+
+.driver-timer-text {
+  position: absolute;
+  top: -18px;
+  right: 0;
+  font-size: 0.6rem;
+  color: #64748b;
+}
+
+/* Stopped / Connecting messages */
+.driver-stopped-msg,
+.driver-connecting-msg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 20px 0;
+  gap: 8px;
+}
+
+.driver-stopped-icon { font-size: 2.5rem; }
+
+.driver-stopped-msg h3 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #22c55e;
+  margin: 0;
+}
+
+.driver-stopped-msg p,
+.driver-connecting-msg p {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  margin: 0;
+}
