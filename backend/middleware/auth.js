@@ -1,5 +1,19 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
+import { getConnectionStatus } from '../config/db.js';
+
+/**
+ * Demo user object for offline mode
+ */
+const DEMO_USER = {
+  _id: 'demo_user_001',
+  name: 'Demo User',
+  email: 'demo@resqai.com',
+  role: 'user',
+  phone: '+919322372556',
+  bloodGroup: 'O+',
+  isVerified: true
+};
 
 /**
  * Protect routes - verify JWT token
@@ -16,7 +30,20 @@ export const protect = async (req, res, next) => {
       return res.status(401).json({ success: false, message: 'Not authorized, no token' });
     }
 
+    // Handle demo tokens when DB is offline
+    if (token.startsWith('demo_') && !getConnectionStatus()) {
+      req.user = DEMO_USER;
+      return next();
+    }
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (!getConnectionStatus()) {
+      // DB offline but got a real JWT — use demo user
+      req.user = DEMO_USER;
+      return next();
+    }
+
     req.user = await User.findById(decoded.id);
 
     if (!req.user) {
@@ -25,6 +52,11 @@ export const protect = async (req, res, next) => {
 
     next();
   } catch (error) {
+    // If JWT verification fails but we're in demo mode, allow through
+    if (!getConnectionStatus()) {
+      req.user = DEMO_USER;
+      return next();
+    }
     return res.status(401).json({ success: false, message: 'Not authorized, token failed' });
   }
 };

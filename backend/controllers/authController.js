@@ -1,5 +1,6 @@
 import User from '../models/User.js';
 import { generateToken } from '../middleware/auth.js';
+import { getConnectionStatus } from '../config/db.js';
 import crypto from 'crypto';
 
 /**
@@ -10,12 +11,65 @@ const generateOTP = () => {
 };
 
 /**
+ * Demo user for offline/hackathon mode
+ */
+const DEMO_USER = {
+  _id: 'demo_user_001',
+  name: 'Demo User',
+  email: 'demo@resqai.com',
+  role: 'user',
+  phone: '+919322372556',
+  bloodGroup: 'O+',
+  isVerified: true,
+  allergies: ['Penicillin'],
+  medicalConditions: [],
+  medications: [],
+  emergencyContacts: [{ name: 'Emergency Contact', phone: '+919876543210', relation: 'Family' }],
+  insurance: { provider: 'Star Health', policyNumber: 'SH-2024-001234' },
+  language: 'en',
+  organDonor: false
+};
+
+const DEMO_ADMIN = {
+  _id: 'demo_admin_001',
+  name: 'Admin User',
+  email: 'admin@resqai.com',
+  role: 'admin',
+  phone: '+919876543210',
+  bloodGroup: 'A+',
+  isVerified: true
+};
+
+/**
  * @desc    Register a new user (step 1 — creates account and sends OTP)
  * @route   POST /api/auth/register
  */
 export const register = async (req, res, next) => {
   try {
     const { name, email, password, phone, bloodGroup } = req.body;
+    const dbConnected = getConnectionStatus();
+
+    if (!dbConnected) {
+      // Demo mode — return a fake successful registration
+      const demoOTP = '123456';
+      console.log(`\n📧 [DEMO] OTP for ${email}: ${demoOTP}\n`);
+      return res.status(201).json({
+        success: true,
+        token: 'demo_token_' + Date.now(),
+        requiresOTP: true,
+        otpSentTo: email,
+        demoOTP,
+        user: {
+          _id: 'demo_' + Date.now(),
+          name: name || 'Demo User',
+          email,
+          role: 'user',
+          phone,
+          bloodGroup,
+          isVerified: false
+        }
+      });
+    }
 
     // Check if user exists
     const existingUser = await User.findOne({ email });
@@ -70,6 +124,18 @@ export const verifyOTP = async (req, res, next) => {
 
     if (!email || !otp) {
       return res.status(400).json({ success: false, message: 'Email and OTP are required' });
+    }
+
+    const dbConnected = getConnectionStatus();
+
+    if (!dbConnected) {
+      // Demo mode — accept any OTP
+      return res.json({
+        success: true,
+        message: 'Email verified successfully (demo)',
+        token: 'demo_verified_token_' + Date.now(),
+        user: { ...DEMO_USER, email, isVerified: true }
+      });
     }
 
     const user = await User.findOne({ email }).select('+otp.code +otp.expiresAt +otp.attempts');
@@ -127,6 +193,14 @@ export const verifyOTP = async (req, res, next) => {
 export const resendOTP = async (req, res, next) => {
   try {
     const { email } = req.body;
+    const dbConnected = getConnectionStatus();
+
+    if (!dbConnected) {
+      const demoOTP = '123456';
+      console.log(`\n📧 [DEMO] Resent OTP for ${email}: ${demoOTP}\n`);
+      return res.json({ success: true, message: 'OTP resent (demo)', otpSentTo: email, demoOTP });
+    }
+
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
@@ -163,6 +237,25 @@ export const login = async (req, res, next) => {
 
     if (!email || !password) {
       return res.status(400).json({ success: false, message: 'Please provide email and password' });
+    }
+
+    const dbConnected = getConnectionStatus();
+
+    if (!dbConnected) {
+      // Demo mode — accept specific demo credentials
+      if (email === 'admin@resqai.com' && password === 'admin123') {
+        return res.json({
+          success: true,
+          token: 'demo_admin_token_' + Date.now(),
+          user: DEMO_ADMIN
+        });
+      }
+      // Accept any email/password combo in demo mode
+      return res.json({
+        success: true,
+        token: 'demo_token_' + Date.now(),
+        user: { ...DEMO_USER, email, name: email.split('@')[0] }
+      });
     }
 
     const user = await User.findOne({ email }).select('+password');
@@ -212,6 +305,9 @@ export const login = async (req, res, next) => {
  */
 export const getMe = async (req, res, next) => {
   try {
+    if (!getConnectionStatus()) {
+      return res.json({ success: true, user: DEMO_USER });
+    }
     const user = await User.findById(req.user._id);
     res.json({ success: true, user });
   } catch (error) {
@@ -225,6 +321,10 @@ export const getMe = async (req, res, next) => {
  */
 export const updateProfile = async (req, res, next) => {
   try {
+    if (!getConnectionStatus()) {
+      return res.json({ success: true, user: { ...DEMO_USER, ...req.body } });
+    }
+
     const fields = ['name', 'phone', 'bloodGroup', 'allergies', 'medicalConditions',
       'medications', 'emergencyContacts', 'dateOfBirth', 'gender',
       'insurance', 'preferredHospitals', 'language', 'organDonor',
